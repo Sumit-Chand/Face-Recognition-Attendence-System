@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Attendance System</title>
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background:
+                radial-gradient(circle at top, rgba(34,211,238,0.16), transparent 25%),
+                radial-gradient(circle at bottom right, rgba(168,85,247,0.18), transparent 30%),
+                linear-gradient(135deg, #050816 0%, #0b1120 48%, #111827 100%);
+            color: #e5eefb;
+        }
+
+        a { text-decoration: none; }
+
+        .topbar {
+            background: rgba(15, 23, 42, 0.78);
+            border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .topbar-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            color: #f8fafc;
+        }
+
+        .brand-mark {
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, #22d3ee, #8b5cf6);
+            color: white;
+            font-size: 1.1rem;
+            box-shadow: 0 10px 20px rgba(34, 211, 238, 0.28);
+        }
+
+        .nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px;
+            align-items: center;
+        }
+
+        .nav a {
+            color: #dbeafe;
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        .nav a:hover {
+            opacity: 1;
+            color: #67e8f9;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 42px 24px 60px;
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            align-items: center;
+            gap: 28px;
+            padding: 36px 0 18px;
+        }
+
+        .eyebrow {
+            display: inline-block;
+            padding: 8px 12px;
+            background: rgba(34, 211, 238, 0.12);
+            border: 1px solid rgba(103, 232, 249, 0.2);
+            border-radius: 999px;
+            color: #a5f3fc;
+            font-size: 11px;
+            letter-spacing: 0.12em;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .hero h1 {
+            margin: 18px 0 16px;
+            font-size: clamp(2.5rem, 5vw, 4.4rem);
+            letter-spacing: -0.06em;
+            line-height: 1.02;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(135deg, #67e8f9, #a78bfa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero p {
+            color: #cbd5e1;
+            font-size: 1.08rem;
+            line-height: 1.7;
+            margin: 0 0 28px;
+            max-width: 620px;
+        }
+
+        .action-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-bottom: 26px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-weight: 700;
+            transition: transform 0.2s ease;
+        }
+
+        .btn:hover { transform: translateY(-1px); }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #22d3ee, #8b5cf6);
+            color: white;
+            box-shadow: 0 16px 28px rgba(139, 92, 246, 0.26);
+        }
+
+        .btn-primary.take-attendance {
+            background: linear-gradient(135deg, #10b981, #22c55e);
+            box-shadow: 0 16px 30px rgba(16, 185, 129, 0.28);
+            padding: 16px 26px;
+            font-size: 1rem;
+        }
+
+        .btn-secondary {
+            background: rgba(15, 23, 42, 0.7);
+            color: #e2e8f0;
+            border: 1px solid rgba(148, 163, 184, 0.18);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(120px, 1fr));
+            gap: 14px;
+            max-width: 480px;
+        }
+
+        .stat {
+            padding: 20px 18px;
+            background: rgba(15, 23, 42, 0.72);
+            border: 1px solid rgba(148,163,184,0.14);
+            border-radius: 16px;
+        }
+
+        .stat strong {
+            display: block;
+            font-size: 1.6rem;
+            margin-bottom: 6px;
+            color: #f8fafc;
+        }
+
+        .stat span {
+            color: #94a3b8;
+            font-size: 0.8rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .panel {
+            background: rgba(15, 23, 42, 0.72);
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            border-radius: 24px;
+            padding: 28px;
+            box-shadow: 0 22px 36px rgba(2, 6, 23, 0.45);
+        }
+
+        .portal-grid {
+            margin-top: 34px;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .portal-card {
+            background: rgba(15, 23, 42, 0.68);
+            border: 1px solid rgba(148,163,184,0.18);
+            border-radius: 20px;
+            padding: 24px 20px;
+            box-shadow: 0 16px 24px rgba(2, 6, 23, 0.38);
+        }
+
+        .portal-card h3 {
+            margin: 0 0 10px;
+            font-size: 1.25rem;
+            letter-spacing: -0.03em;
+        }
+
+        .portal-card p {
+            margin: 0 0 18px;
+            color: #cbd5e1;
+            line-height: 1.7;
+        }
+
+        .portal-card .btn {
+            width: 100%;
+        }
+
+        .quick-links {
+            margin-top: 30px;
+            background: rgba(15, 23, 42, 0.72);
+            border: 1px solid rgba(148,163,184,0.18);
+            border-radius: 22px;
+            padding: 24px 18px;
+        }
+
+        .quick-links h3 {
+            margin: 0 0 18px;
+            font-size: 1.25rem;
+            letter-spacing: -0.04em;
+        }
+
+        .quick-links .link-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .quick-links .btn {
+            padding: 10px 14px;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 860px) {
+            .hero { grid-template-columns: 1fr; }
+            .portal-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="topbar">
+    <div class="topbar-inner">
+        <div class="brand">
+            <div class="brand-mark">F</div>
+            Face Attendance System
+        </div>
+
+        <nav class="nav">
+            <a href="/">Home</a>
+            <a href="/teacher-login">Teacher Login</a>
+            <a href="/student-login">Student Login</a>
+            <a href="/register">Register Student</a>
+            <a href="/attendance">Take Attendance</a>
+        </nav>
+    </div>
+</header>
+
+<div class="container">
+    <section class="hero">
+        <div>
+            <span class="eyebrow">AI-powered attendance</span>
+            <h1>Smarter classroom checks with <span>live face recognition</span>.</h1>
+            <p>
+                Track daily attendance automatically, keep each student informed,
+                and review class progress with a simple, modern campus portal.
+            </p>
+
+            <div class="action-row">
+                <a href="/teacher-login" class="btn btn-primary">Teacher Portal</a>
+                <a href="/student-login" class="btn btn-secondary">Student Portal</a>
+                <a href="/register" class="btn btn-secondary">Register Student</a>
+                <a href="/attendance" class="btn btn-primary take-attendance">Take Attendance</a>
+            </div>
+
+            <div class="stats">
+                <div class="stat"><strong>AI</strong><span>Recognition</span></div>
+                <div class="stat"><strong>24/7</strong><span>Access</span></div>
+                <div class="stat"><strong>Live</strong><span>Reports</span></div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="portal-card" style="margin-bottom: 16px;">
+                <h3>Teacher Portal</h3>
+                <p>Manage students, monitor daily attendance, and review classroom records securely.</p>
+                <a href="/teacher-login" class="btn btn-primary">Open Teacher Login</a>
+            </div>
+
+            <div class="portal-card">
+                <h3>Student Portal</h3>
+                <p>Students can log in to check attendance records, review personal activity, and stay updated.</p>
+                <a href="/student-login" class="btn btn-secondary">Open Student Login</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="portal-grid">
+        <div class="portal-card">
+            <h3>Teacher Login</h3>
+            <p>Access the teacher dashboard to manage class records and attendance activity.</p>
+            <a href="/teacher-login" class="btn btn-primary">Login</a>
+        </div>
+
+        <div class="portal-card">
+            <h3>Student Login</h3>
+            <p>Access your student dashboard and personal attendance summary with a secure login.</p>
+            <a href="/student-login" class="btn btn-secondary">Login</a>
+        </div>
+
+        <div class="portal-card">
+            <h3>Attendance Camera</h3>
+            <p>Launch the live face-recognition session and record attendance for the class in real time.</p>
+            <a href="/attendance" class="btn btn-primary">Take Attendance</a>
+        </div>
+
+        <div class="portal-card">
+            <h3>Register Student</h3>
+            <p>Enroll a new student and begin the face enrollment process for attendance recognition.</p>
+            <a href="/register" class="btn btn-secondary">Register</a>
+        </div>
+    </section>
+</div>
+
+</body>
+</html>

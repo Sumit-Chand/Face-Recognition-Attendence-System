@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Face Recognition Attendance</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: #f4f6f8;
+            padding: 30px;
+        }
+
+        h1 {
+            margin-bottom: 25px;
+        }
+
+        video {
+            width: 640px;
+            max-width: 90%;
+            border-radius: 12px;
+            background: black;
+        }
+
+        button {
+            margin: 15px 8px;
+            padding: 12px 25px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        #startBtn {
+            background: #2196f3;
+            color: white;
+        }
+
+        #stopBtn {
+            background: #f44336;
+            color: white;
+        }
+
+        #status {
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Face Recognition Attendance</h1>
+
+    <video id="video" autoplay playsinline></video>
+
+    <br>
+
+    <button id="startBtn" onclick="startCamera()">
+        Start Camera
+    </button>
+
+    <button id="stopBtn" onclick="stopCamera()">
+        Stop Camera
+    </button>
+
+    <div id="status">
+        Camera not started
+    </div>
+
+    <script>
+
+        const video = document.getElementById("video");
+        const status = document.getElementById("status");
+
+        let stream = null;
+        let recognitionTimer = null;
+        let busy = false;
+
+        async function startCamera() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: true,
+                    audio: false
+                });
+
+                video.srcObject = stream;
+                status.innerText = "Camera started. Face ke saamne dekho...";
+                recognitionTimer = setInterval(recognizeFace, 1500);
+            } catch (error) {
+                console.error(error);
+                status.innerText = "Camera access denied.";
+            }
+        }
+
+        function stopCamera() {
+            if (recognitionTimer) {
+                clearInterval(recognitionTimer);
+                recognitionTimer = null;
+            }
+
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+            }
+
+            video.srcObject = null;
+            status.innerText = "Camera stopped.";
+        }
+
+        async function recognizeFace() {
+            if (busy || !video.videoWidth) {
+                return;
+            }
+
+            busy = true;
+
+            const canvas = document.createElement("canvas");
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            canvas.toBlob(async function(blob) {
+                try {
+                    const formData = new FormData();
+                    formData.append("image", blob, "frame.jpg");
+
+                    const response = await fetch("/recognize", {
+                        method: "POST",
+                        body: formData
+                    });
+
+                    const data = await response.json();
+
+                    if (data.recognized) {
+                        status.innerText =
+                            "✓ Attendance Marked: " +
+                            data.name +
+                            " | ID: " +
+                            data.student_id;
+                    } else {
+                        status.innerText = data.message || "Face not recognized";
+                    }
+                } catch (error) {
+                    console.error(error);
+                    status.innerText = "Recognition error.";
+                } finally {
+                    busy = false;
+                }
+            }, "image/jpeg", 0.8);
+        }
+
+    </script>
+<hr style="margin:40px 0;">
+
+<h2>Today's Attendance</h2>
+
+<table style="
+    width: 90%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    background: white;
+">
+
+    <tr style="background:#1f2937;color:white;">
+        <th style="padding:12px;">Student ID</th>
+        <th style="padding:12px;">Name</th>
+        <th style="padding:12px;">Time</th>
+    </tr>
+
+    {% for row in attendance_data %}
+
+    <tr>
+        <td style="padding:12px;border:1px solid #ddd;">
+            {{ row.id }}
+        </td>
+
+        <td style="padding:12px;border:1px solid #ddd;">
+            {{ row.name }}
+        </td>
+
+        <td style="padding:12px;border:1px solid #ddd;">
+            {{ row.time }}
+        </td>
+    </tr>
+
+    {% else %}
+
+    <tr>
+        <td colspan="3" style="padding:20px;">
+            No attendance marked today.
+        </td>
+    </tr>
+
+    {% endfor %}
+
+</table>
+
+</body>
+</html>

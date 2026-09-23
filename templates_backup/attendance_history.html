@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Attendance History</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            padding: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+        }
+
+        .back {
+            display: inline-block;
+            margin-bottom: 25px;
+            padding: 10px 20px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+
+        table {
+            width: 90%;
+            margin: auto;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th {
+            background: #1f2937;
+            color: white;
+            padding: 14px;
+        }
+
+        td {
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+
+        tr:hover {
+            background: #f1f5f9;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <h1>Attendance History</h1>
+
+    <a href="/attendance" class="back">
+        ← Back to Attendance
+    </a>
+
+    <table>
+
+        <tr>
+            <th>Date</th>
+            <th>Student ID</th>
+            <th>Name</th>
+            <th>Time</th>
+        </tr>
+
+        {% for row in history_data %}
+
+        <tr>
+
+            <td>
+                {{ row.date }}
+            </td>
+
+            <td>
+                {{ row.id }}
+            </td>
+
+            <td>
+                {{ row.name }}
+            </td>
+
+            <td>
+                {{ row.time }}
+            </td>
+
+        </tr>
+
+        {% else %}
+
+        <tr>
+
+            <td colspan="4">
+                No attendance history found.
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+</body>
+
+</html>

@@ -1,0 +1,207 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Dashboard</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(34,211,238,0.14), transparent 25%),
+                radial-gradient(circle at bottom right, rgba(168,85,247,0.18), transparent 28%),
+                linear-gradient(135deg, #050816 0%, #0b1120 42%, #111827 100%);
+            color: #e5eefb;
+            padding: 36px 18px;
+        }
+
+        .container {
+            max-width: 1080px;
+            margin: 0 auto;
+            display: grid;
+            gap: 24px;
+        }
+
+        .hero {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(148,163,184,0.18);
+            border-radius: 22px;
+            padding: 30px 28px;
+            box-shadow: 0 20px 28px rgba(2, 6, 23, 0.48);
+        }
+
+        .eyebrow {
+            display: inline-block;
+            padding: 7px 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(103,232,249,0.28);
+            background: rgba(34,211,238,0.1);
+            color: #a5f3fc;
+            font-size: 11px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        h1 {
+            margin: 18px 0 8px;
+            font-size: clamp(2rem, 4vw, 3rem);
+            letter-spacing: -0.06em;
+        }
+
+        .name {
+            display: inline-block;
+            background: linear-gradient(135deg, #67e8f9, #a78bfa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 800;
+        }
+
+        .meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-top: 16px;
+        }
+
+        .meta-card {
+            min-width: 180px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(148,163,184,0.15);
+            border-radius: 14px;
+            padding: 14px 16px;
+        }
+
+        .meta-card strong {
+            display: block;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #94a3b8;
+            margin-bottom: 8px;
+        }
+
+        .meta-card span {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #f8fafc;
+        }
+
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+        }
+
+        .nav-card {
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid rgba(148,163,184,0.18);
+            border-radius: 18px;
+            padding: 24px 20px;
+            box-shadow: 0 12px 20px rgba(2, 6, 23, 0.4);
+            text-align: left;
+        }
+
+        .nav-card h3 {
+            margin-top: 0;
+            font-size: 1.2rem;
+        }
+
+        .nav-card p {
+            color: #cbd5e1;
+            line-height: 1.6;
+            margin: 0 0 18px;
+        }
+
+        .nav-card a {
+            display: inline-block;
+            text-decoration: none;
+            padding: 10px 16px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #22d3ee, #8b5cf6);
+            color: white;
+            font-weight: 700;
+        }
+
+        .logout {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 16px;
+            border-radius: 10px;
+            background: rgba(148,163,184,0.08);
+            border: 1px solid rgba(148,163,184,0.18);
+            color: #e2e8f0;
+            text-decoration: none;
+            font-weight: 700;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="hero">
+        <div class="eyebrow">Student dashboard</div>
+        <h1>Hello, <span class="name">{{ student_name }}</span></h1>
+
+        <div class="meta">
+            <div class="meta-card">
+                <strong>Student ID</strong>
+                <span>{{ student_id }}</span>
+            </div>
+            <div class="meta-card">
+                <strong>Status</strong>
+                <span>Active</span>
+            </div>
+            <div class="meta-card">
+                <strong>Portal</strong>
+                <span>AI Attendance</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="meta" style="margin-top: 0; margin-bottom: 12px;">
+        <div class="meta-card">
+            <strong>Attendance %</strong>
+            <span>{{ attendance_percentage }}%</span>
+        </div>
+        <div class="meta-card">
+            <strong>Present</strong>
+            <span>{{ present_days }} days</span>
+        </div>
+        <div class="meta-card">
+            <strong>Absent</strong>
+            <span>{{ absent_days }} days</span>
+        </div>
+    </div>
+
+    <div class="nav-grid">
+        <div class="nav-card">
+            <h3>My Attendance</h3>
+            <p>Review every attendance record and see your daily presence history.</p>
+            <a href="/student/attendance">Open</a>
+        </div>
+
+        <div class="nav-card">
+            <h3>Profile</h3>
+            <p>Your identity and academic access details are stored securely here.</p>
+            <a href="/student/profile">View</a>
+        </div>
+
+        <div class="nav-card">
+            <h3>Session</h3>
+            <p>Stay signed in to your personal student workspace and keep your records up to date.</p>
+            <a href="/logout">Logout</a>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

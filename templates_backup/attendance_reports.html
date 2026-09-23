@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Attendance Reports</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f4f6f8;
+        }
+
+        .header {
+            background: #212529;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 35px auto;
+            padding: 20px;
+        }
+
+        .summary {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .summary h2 {
+            margin: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        th {
+            background: #212529;
+            color: white;
+            padding: 14px;
+        }
+
+        td {
+            padding: 14px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        tr:hover {
+            background: #f5f5f5;
+        }
+
+        .percentage {
+            font-weight: bold;
+        }
+
+        .buttons {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .buttons a {
+            display: inline-block;
+            padding: 12px 20px;
+            margin: 5px;
+            background: #212529;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+
+        .buttons a:hover {
+            opacity: 0.85;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 25px;
+            background: white;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+    <div class="header">
+
+        <h1>Face Recognition Attendance System</h1>
+
+        <p>Attendance Reports</p>
+
+    </div>
+
+
+    <div class="container">
+
+        <div class="summary">
+
+            <h2>
+                Total Recorded Days: {{ total_days }}
+            </h2>
+
+        </div>
+
+
+        {% if reports %}
+
+        <table>
+
+            <tr>
+
+                <th>Student ID</th>
+
+                <th>Name</th>
+
+                <th>Present Days</th>
+
+                <th>Absent Days</th>
+
+                <th>Attendance %</th>
+
+            </tr>
+
+
+            {% for report in reports %}
+
+            <tr>
+
+                <td>
+                    {{ report.id }}
+                </td>
+
+                <td>
+                    {{ report.name }}
+                </td>
+
+                <td>
+                    {{ report.present }}
+                </td>
+
+                <td>
+                    {{ report.absent }}
+                </td>
+
+                <td class="percentage">
+                    {{ report.percentage }}%
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+
+        {% else %}
+
+        <div class="empty">
+
+            <h3>
+                No students registered.
+            </h3>
+
+        </div>
+
+        {% endif %}
+
+
+        <div class="buttons">
+
+            <a href="/dashboard">
+                Dashboard
+            </a>
+
+            <a href="/students">
+                Students
+            </a>
+
+            <a href="/attendance">
+                Today's Attendance
+            </a>
+
+            <a href="/attendance-history">
+                Attendance History
+            </a>
+
+            <a href="/">
+                Home
+            </a>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

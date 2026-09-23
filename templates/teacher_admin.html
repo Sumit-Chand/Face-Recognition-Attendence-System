@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Admin</title>
+    <style>
+        :root {
+            --bg: #0b1220;
+            --bg-soft: #111827;
+            --panel: rgba(17, 24, 39, 0.82);
+            --panel-strong: #0f172a;
+            --panel-soft: #111827;
+            --primary: #60a5fa;
+            --primary-dark: #3b82f6;
+            --text: #e5eefb;
+            --muted: #a7b5d0;
+            --line: rgba(148, 163, 184, 0.2);
+            --badge: rgba(96, 165, 250, 0.16);
+            --success: rgba(34, 197, 94, 0.14);
+            --success-text: #bbf7d0;
+            --danger: rgba(239, 68, 68, 0.14);
+            --danger-text: #fecaca;
+            --shadow: 0 18px 40px rgba(2, 6, 23, 0.45);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: radial-gradient(circle at top, #111827 0%, var(--bg) 42%, #020817 100%);
+            color: var(--text);
+        }
+
+        .topbar {
+            background: linear-gradient(135deg, #020817, #0f172a 50%, #1d4ed8);
+            color: white;
+            padding: 22px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            box-shadow: 0 10px 30px rgba(2, 6, 23, 0.45);
+            border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+        }
+
+        .topbar h1 {
+            margin: 0;
+            font-size: clamp(1.8rem, 2vw, 2.5rem);
+            letter-spacing: -0.03em;
+        }
+
+        .topbar .right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .topbar .right span {
+            color: #dbeafe;
+            font-weight: 700;
+        }
+
+        .topbar .right a {
+            display: inline-block;
+            text-decoration: none;
+            color: white;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.12);
+            padding: 9px 14px;
+            border-radius: 10px;
+            transition: 0.2s ease;
+        }
+
+        .topbar .right a:hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 30px auto 56px;
+            padding: 0 20px;
+        }
+
+        .scope-banner {
+            margin: 22px auto 0;
+            max-width: 1200px;
+            padding: 14px 18px;
+            text-align: center;
+            border-radius: 12px;
+            background: rgba(96, 165, 250, 0.08);
+            color: #dbeafe;
+            border: 1px solid rgba(96, 165, 250, 0.2);
+            font-weight: 700;
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.18);
+        }
+
+        .panel {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            box-shadow: var(--shadow);
+            padding: 22px;
+            margin-top: 24px;
+            backdrop-filter: blur(8px);
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+        }
+
+        .panel-header h3 {
+            margin: 0;
+            font-size: 1.1rem;
+            color: var(--text);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 10px;
+            font-size: 12px;
+            border-radius: 999px;
+            background: var(--badge);
+            color: #dbeafe;
+            font-weight: 700;
+        }
+
+        .filter-form {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .filter-form select,
+        .filter-form button,
+        .filter-form a {
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid var(--line);
+            font-size: 14px;
+        }
+
+        .filter-form select {
+            min-width: 160px;
+            background: rgba(15, 23, 42, 0.9);
+            color: var(--text);
+        }
+
+        .filter-form button {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .filter-form button:hover {
+            opacity: 0.96;
+        }
+
+        .filter-form a {
+            text-decoration: none;
+            background: rgba(148, 163, 184, 0.12);
+            color: var(--text);
+            font-weight: 700;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 18px;
+        }
+
+        .card {
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.8), rgba(17, 24, 39, 0.9));
+            border-radius: 18px;
+            padding: 24px 18px;
+            border: 1px solid var(--line);
+            text-align: center;
+            transition: transform 0.18s ease, box-shadow 0.18s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 22px rgba(15, 23, 42, 0.24);
+        }
+
+        .card .label {
+            display: inline-block;
+            margin-bottom: 12px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(96, 165, 250, 0.12);
+            color: #bfdbfe;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .card h2 {
+            margin: 0;
+            font-size: 2.5rem;
+            color: white;
+        }
+
+        .card p {
+            margin: 8px 0 0;
+            color: var(--muted);
+            font-size: 1rem;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .actions a {
+            display: inline-block;
+            padding: 11px 16px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+            box-shadow: 0 8px 18px rgba(59, 130, 246, 0.27);
+            transition: 0.2s ease;
+        }
+
+        .actions a:hover {
+            opacity: 0.96;
+            transform: translateY(-1px);
+        }
+
+        .alert {
+            margin-top: 18px;
+            padding: 12px 14px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        .alert.success {
+            background: var(--success);
+            border: 1px solid rgba(34, 197, 94, 0.45);
+            color: var(--success-text);
+        }
+
+        .alert.error {
+            background: var(--danger);
+            border: 1px solid rgba(239, 68, 68, 0.45);
+            color: var(--danger-text);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(15, 23, 42, 0.7);
+            color: var(--text);
+        }
+
+        thead th {
+            background: rgba(15, 23, 42, 0.95);
+            color: white;
+            padding: 14px 16px;
+            text-align: left;
+        }
+
+        tbody td {
+            padding: 14px 16px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+            color: var(--text);
+        }
+
+        tbody tr:hover {
+            background: rgba(30, 41, 59, 0.72);
+        }
+
+        .empty-box {
+            padding: 24px;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        @media (max-width: 720px) {
+            .topbar { padding: 18px 20px; }
+            .panel { padding: 18px 16px; }
+            .filter-form { justify-content: stretch; }
+            .filter-form select,
+            .filter-form button,
+            .filter-form a {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <h1>Teacher Portal</h1>
+        <div class="right">
+            <span>Welcome, {{ teacher_name }}</span>
+            <a href="/teacher-logout">Logout</a>
+        </div>
+    </div>
+
+    {% if selected_department or selected_year or selected_section or selected_subject %}
+    <div class="scope-banner">
+        Active scope: Department {{ selected_department or 'All' }} | Year {{ selected_year or 'All' }} | Section {{ selected_section or 'All' }} | Subject {{ selected_subject or 'All' }}
+    </div>
+    {% endif %}
+
+    <div class="container">
+        <div class="panel">
+            <div class="panel-header">
+                <h3>Class filters</h3>
+                <span class="badge">Live</span>
+            </div>
+
+            <form method="GET" action="/teacher/admin" class="filter-form">
+                <select name="department">
+                    <option value="">All departments</option>
+                    {% for dept in departments %}
+                        <option value="{{ dept }}" {% if selected_department == dept %}selected{% endif %}>{{ dept }}</option>
+                    {% endfor %}
+                </select>
+
+                <select name="year">
+                    <option value="">All years</option>
+                    {% for year in valid_years %}
+                        <option value="{{ year }}" {% if selected_year == year %}selected{% endif %}>{{ year }}</option>
+                    {% endfor %}
+                </select>
+
+                <select name="section">
+                    <option value="">All sections</option>
+                    {% for section in sections %}
+                        <option value="{{ section }}" {% if selected_section == section %}selected{% endif %}>{{ section }}</option>
+                    {% endfor %}
+                </select>
+
+                <select name="subject">
+                    <option value="">All subjects</option>
+                    {% for subject in subjects %}
+                        <option value="{{ subject }}" {% if selected_subject == subject %}selected{% endif %}>{{ subject }}</option>
+                    {% endfor %}
+                </select>
+
+                <button type="submit">Apply</button>
+
+                {% if selected_department or selected_year or selected_section or selected_subject %}
+                    <a href="/teacher/admin">Clear</a>
+                {% endif %}
+            </form>
+        </div>
+
+        <div class="panel">
+            <div class="panel-header">
+                <h3>Overview</h3>
+                <span class="badge">Summary</span>
+            </div>
+            <div class="cards">
+                <div class="card">
+                    <span class="label">Students</span>
+                    <h2>{{ total_students }}</h2>
+                    <p>Total in scope</p>
+                </div>
+
+                <div class="card">
+                    <span class="label">Present</span>
+                    <h2>{{ present_today }}</h2>
+                    <p>Present today</p>
+                </div>
+
+                <div class="card">
+                    <span class="label">Absent</span>
+                    <h2>{{ absent_today }}</h2>
+                    <p>Absent today</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-header">
+                <h3>Quick actions</h3>
+                <span class="badge">Tools</span>
+            </div>
+            <div class="actions">
+                <a href="/register">Register Student</a>
+                <a href="/attendance">Open Camera</a>
+                <a href="/attendance-history">Attendance History</a>
+                <a href="/attendance-reports">Reports</a>
+                <a href="/students">Student List</a>
+                <a href="/teacher/retrain-model">Retrain Model</a>
+            </div>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="panel">
+            <div class="panel-header">
+                <h3>Today's attendance</h3>
+                <span class="badge">Now</span>
+            </div>
+            {% if today_attendance %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Student ID</th>
+                        <th>Name</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in today_attendance %}
+                    <tr>
+                        <td>{{ row.id }}</td>
+                        <td>{{ row.name }}</td>
+                        <td>{{ row.time }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-box">No attendance has been marked yet today.</div>
+            {% endif %}
+        </div>
+
+        <div class="panel">
+            <div class="panel-header">
+                <h3>Students in current scope</h3>
+                <span class="badge">List</span>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Student ID</th>
+                        <th>Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student_id, student_name in students.items() %}
+                    <tr>
+                        <td>{{ student_id }}</td>
+                        <td>{{ student_name }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

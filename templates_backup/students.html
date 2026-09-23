@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Student Management</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            padding: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 25px;
+        }
+
+        .back {
+            display: inline-block;
+            margin-bottom: 25px;
+            padding: 10px 20px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+
+        table {
+            width: 80%;
+            margin: auto;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th {
+            background: #1f2937;
+            color: white;
+            padding: 14px;
+        }
+
+        td {
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+
+        tr:hover {
+            background: #f1f5f9;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <h1>Student Management</h1>
+
+    <a href="/" class="back">
+        ← Back to Home
+    </a>
+
+    <table>
+
+        <tr>
+    <th>Student ID</th>
+    <th>Name</th>
+    <th>Action</th>
+</tr>
+
+{% for student_id, student_name in students.items() %}
+
+<tr>
+    <td>
+        {{ student_id }}
+    </td>
+
+    <td>
+        {{ student_name }}
+    </td>
+
+    <td>
+        <form method="POST"
+              action="/delete-student"
+              onsubmit="return confirm('Delete this student?');">
+
+            <input type="hidden"
+                   name="student_id"
+                   value="{{ student_id }}">
+
+            <button type="submit"
+                    style="background:#dc3545;
+                           color:white;
+                           border:none;
+                           padding:8px 14px;
+                           border-radius:5px;
+                           cursor:pointer;">
+                Delete
+            </button>
+
+        </form>
+    </td>
+</tr>
+
+{% else %}
+
+<tr>
+    <td colspan="3">
+        No students registered.
+    </td>
+</tr>
+
+{% endfor %}
+
+    </table>
+
+</body>
+
+</html>

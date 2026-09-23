@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Profile</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background: radial-gradient(circle at top left, rgba(34,211,238,0.14), transparent 25%),
+                        radial-gradient(circle at bottom right, rgba(168,85,247,0.18), transparent 28%),
+                        linear-gradient(135deg, #050816 0%, #0b1120 42%, #111827 100%);
+            color: #e5eefb;
+            padding: 36px 18px;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            display: grid;
+            gap: 24px;
+        }
+        .card {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(148,163,184,0.18);
+            border-radius: 22px;
+            padding: 28px;
+            box-shadow: 0 18px 28px rgba(2, 6, 23, 0.48);
+        }
+        .eyebrow {
+            display: inline-block;
+            padding: 7px 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(103,232,249,0.28);
+            background: rgba(34,211,238,0.1);
+            color: #a5f3fc;
+            font-size: 11px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+        h1 {
+            margin: 18px 0 8px;
+            font-size: clamp(2rem, 4vw, 2.7rem);
+            letter-spacing: -0.06em;
+        }
+        .name { color: #67e8f9; }
+        .meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+        .meta-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(148,163,184,0.15);
+            border-radius: 14px;
+            padding: 16px 18px;
+        }
+        .meta-card strong {
+            display: block;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #94a3b8;
+            margin-bottom: 8px;
+        }
+        .meta-card span {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #f8fafc;
+        }
+        .actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 22px;
+        }
+        .btn {
+            display: inline-block;
+            text-decoration: none;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-weight: 700;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #22d3ee, #8b5cf6);
+            color: white;
+        }
+        .btn-secondary {
+            background: rgba(148,163,184,0.08);
+            border: 1px solid rgba(148,163,184,0.18);
+            color: #e2e8f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="eyebrow">Student profile</div>
+            <h1>Hello, <span class="name">{{ student_name }}</span></h1>
+
+            <div class="meta">
+                <div class="meta-card">
+                    <strong>Student ID</strong>
+                    <span>{{ student_id }}</span>
+                </div>
+                <div class="meta-card">
+                    <strong>Attendance %</strong>
+                    <span>{{ attendance_percentage }}%</span>
+                </div>
+                <div class="meta-card">
+                    <strong>Present</strong>
+                    <span>{{ present_days }} days</span>
+                </div>
+                <div class="meta-card">
+                    <strong>Absent</strong>
+                    <span>{{ absent_days }} days</span>
+                </div>
+            </div>
+
+            <div class="actions">
+                <a href="/student/dashboard" class="btn btn-primary">Back to Dashboard</a>
+                <a href="/student/attendance" class="btn btn-secondary">View Attendance</a>
+                <a href="/logout" class="btn btn-secondary">Logout</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

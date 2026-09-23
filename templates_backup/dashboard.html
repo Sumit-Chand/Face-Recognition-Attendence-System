@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard - Face Attendance System</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f4f6f8;
+        }
+
+        .header {
+            background: #212529;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(220px, 1fr));
+
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .card h2 {
+            margin: 0;
+            font-size: 42px;
+        }
+
+        .card p {
+            font-size: 18px;
+            margin-top: 10px;
+        }
+
+        .links {
+            margin-top: 35px;
+            text-align: center;
+        }
+
+        .links a {
+            display: inline-block;
+            margin: 8px;
+            padding: 12px 20px;
+            background: #212529;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+        }
+
+        .links a:hover {
+            opacity: 0.85;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="header">
+
+        <h1>Face Recognition Attendance System</h1>
+
+        <p>Dashboard</p>
+
+    </div>
+
+
+    <div class="container">
+
+        <div class="cards">
+
+            <div class="card">
+
+                <h2>
+                    {{ total_students }}
+                </h2>
+
+                <p>Total Students</p>
+
+            </div>
+
+
+            <div class="card">
+
+                <h2>
+                    {{ present_today }}
+                </h2>
+
+                <p>Present Today</p>
+
+            </div>
+
+
+            <div class="card">
+
+                <h2>
+                    {{ absent_today }}
+                </h2>
+
+                <p>Absent Today</p>
+
+            </div>
+
+        </div>
+
+
+        <div class="links">
+
+            <a href="/">
+                Home
+            </a>
+
+            <a href="/register">
+                Register Student
+            </a>
+
+            <a href="/students">
+                Students
+            </a>
+
+            <a href="/attendance">
+                Today's Attendance
+            </a>
+
+            <a href="/attendance-history">
+                Attendance History
+            </a>
+            <a href="/attendance-reports">
+                Attendance Reports
+            </a>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

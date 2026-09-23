@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Face Capture - Face Attendance System</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #222;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 900px;
+            margin: 40px auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .student-info {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+
+        .student-info div {
+            font-size: 17px;
+        }
+
+        .camera-area {
+            text-align: center;
+        }
+
+        video {
+            width: 100%;
+            max-width: 640px;
+            height: 480px;
+            object-fit: cover;
+            background: #111;
+            border-radius: 12px;
+            border: 3px solid #ddd;
+        }
+
+        canvas {
+            display: none;
+        }
+
+        .buttons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            border: none;
+            padding: 13px 25px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #startCameraBtn {
+            background: #2563eb;
+            color: white;
+        }
+
+        #startCaptureBtn {
+            background: #16a34a;
+            color: white;
+        }
+
+        button:disabled {
+            background: #aaa !important;
+            cursor: not-allowed;
+        }
+
+        .progress-section {
+            margin-top: 25px;
+            text-align: center;
+        }
+
+        .progress-text {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 18px;
+            background: #e5e7eb;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-top: 12px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: #16a34a;
+            transition: width 0.2s ease;
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background: #eff6ff;
+            color: #1d4ed8;
+            text-align: center;
+        }
+
+        .success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .instructions {
+            margin-top: 25px;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 10px;
+        }
+
+        .instructions h3 {
+            margin-top: 0;
+        }
+
+        .instructions li {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="card">
+
+        <h1>Face Capture</h1>
+
+        <p class="subtitle">
+            Register your face for the attendance system
+        </p>
+
+        <!-- Student Information -->
+        <div class="student-info">
+
+            <div>
+                <strong>Student:</strong>
+                {{ student_name }}
+            </div>
+
+            <div>
+                <strong>ID:</strong>
+                {{ student_id }}
+            </div>
+
+        </div>
+
+        <!-- Camera -->
+        <div class="camera-area">
+
+            <video
+                id="video"
+                autoplay
+                playsinline>
+            </video>
+
+            <canvas id="canvas"></canvas>
+
+            <div class="buttons">
+
+                <button
+                    id="startCameraBtn"
+                    type="button">
+                    Start Camera
+                </button>
+
+                <button
+                    id="startCaptureBtn"
+                    type="button"
+                    disabled>
+                    Start Capturing
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- Progress -->
+        <div class="progress-section">
+
+            <div class="progress-text">
+                Face Samples:
+                <span id="count">0</span>
+                /
+                <span id="total">{{ samples_required }}</span>
+            </div>
+
+            <div class="progress-bar">
+                <div
+                    id="progressFill"
+                    class="progress-fill">
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Status -->
+        <div
+            id="status"
+            class="status">
+
+            Please click "Start Camera" and allow camera access.
+
+        </div>
+
+        <!-- Instructions -->
+        <div class="instructions">
+
+            <h3>Instructions</h3>
+
+            <ul>
+                <li>Make sure your face is clearly visible.</li>
+                <li>Keep only one person in the camera frame.</li>
+                <li>Look at the camera.</li>
+                <li>Make sure there is enough lighting.</li>
+                <li>Keep your face reasonably close to the camera.</li>
+                <li>The system will capture 60 face samples.</li>
+            </ul>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    const video = document.getElementById("video");
+    const canvas = document.getElementById("canvas");
+
+    const startCameraBtn =
+        document.getElementById("startCameraBtn");
+
+    const startCaptureBtn =
+        document.getElementById("startCaptureBtn");
+
+    const countElement =
+        document.getElementById("count");
+
+    const totalElement =
+        document.getElementById("total");
+
+    const progressFill =
+        document.getElementById("progressFill");
+
+    const statusElement =
+        document.getElementById("status");
+
+
+    const totalSamples =
+        parseInt(totalElement.textContent);
+
+
+    let stream = null;
+    let capturing = false;
+    let currentCount = 0;
+
+
+    // --------------------------------------------------
+    // STATUS
+    // --------------------------------------------------
+
+    function setStatus(message, type = "") {
+
+        statusElement.textContent = message;
+
+        statusElement.className = "status";
+
+        if (type) {
+            statusElement.classList.add(type);
+        }
+    }
+
+
+    // --------------------------------------------------
+    // PROGRESS
+    // --------------------------------------------------
+
+    function updateProgress(count) {
+
+        currentCount = count;
+
+        countElement.textContent = count;
+
+        const percentage =
+            (count / totalSamples) * 100;
+
+        progressFill.style.width =
+            percentage + "%";
+    }
+
+
+    // --------------------------------------------------
+    // START CAMERA
+    // --------------------------------------------------
+
+    startCameraBtn.addEventListener(
+        "click",
+        async function () {
+
+            try {
+
+                setStatus(
+                    "Requesting camera permission..."
+                );
+
+                if (!navigator.mediaDevices ||
+                    !navigator.mediaDevices.getUserMedia) {
+
+                    setStatus(
+                        "Browser camera access is not available.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+                stream =
+                    await navigator.mediaDevices.getUserMedia({
+                        video: true,
+                        audio: false
+                    });
+
+                video.srcObject = stream;
+
+                await video.play();
+
+                startCameraBtn.disabled = true;
+                startCaptureBtn.disabled = false;
+
+                setStatus(
+                    "Camera started. Position your face and click Start Capturing."
+                );
+
+            }
+
+            catch (error) {
+
+                console.error(error);
+
+                setStatus(
+                    "Camera access failed. Please allow camera permission.",
+                    "error"
+                );
+
+            }
+
+        }
+    );
+
+
+    // --------------------------------------------------
+    // CAPTURE ONE FRAME
+    // --------------------------------------------------
+
+    async function captureFrame() {
+
+        if (!stream) {
+            return false;
+        }
+
+
+        const width = video.videoWidth;
+        const height = video.videoHeight;
+
+
+        if (!width || !height) {
+
+            setStatus(
+                "Camera is not ready yet. Please wait.",
+                "error"
+            );
+
+            return false;
+        }
+
+
+        canvas.width = width;
+        canvas.height = height;
+
+
+        const context =
+            canvas.getContext("2d");
+
+
+        context.drawImage(
+            video,
+            0,
+            0,
+            width,
+            height
+        );
+
+
+        const blob =
+            await new Promise(resolve => {
+
+                canvas.toBlob(
+                    resolve,
+                    "image/jpeg",
+                    0.85
+                );
+
+            });
+
+
+        if (!blob) {
+
+            setStatus(
+                "Could not capture camera frame.",
+                "error"
+            );
+
+            return false;
+        }
+
+
+        const formData =
+            new FormData();
+
+        formData.append(
+            "image",
+            blob,
+            "capture.jpg"
+        );
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/capture",
+                    {
+                        method: "POST",
+                        body: formData
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (data.success) {
+
+                updateProgress(data.count);
+
+
+                if (data.completed) {
+
+                    capturing = false;
+
+                    startCaptureBtn.disabled = true;
+
+                    setStatus(
+                        data.message,
+                        "success"
+                    );
+
+                    stopCamera();
+
+                    return true;
+                }
+
+
+                setStatus(
+                    data.message
+                );
+
+                return true;
+            }
+
+
+            // Face not detected / multiple faces
+            setStatus(
+                data.message,
+                "error"
+            );
+
+            return false;
+
+        }
+
+        catch (error) {
+
+            console.error(error);
+
+            setStatus(
+                "Error communicating with Flask server.",
+                "error"
+            );
+
+            return false;
+        }
+    }
+
+
+    // --------------------------------------------------
+    // START CAPTURING
+    // --------------------------------------------------
+
+    startCaptureBtn.addEventListener(
+        "click",
+        async function () {
+
+            if (!stream) {
+
+                setStatus(
+                    "Please start the camera first.",
+                    "error"
+                );
+
+                return;
+            }
+
+
+            if (capturing) {
+                return;
+            }
+
+
+            capturing = true;
+
+            startCaptureBtn.disabled = true;
+
+
+            setStatus(
+                "Capturing face samples. Please keep your face visible."
+            );
+
+
+            while (
+                capturing &&
+                currentCount < totalSamples
+            ) {
+
+                await captureFrame();
+
+
+                await new Promise(
+                    resolve =>
+                        setTimeout(resolve, 400)
+                );
+
+            }
+
+
+            if (currentCount < totalSamples) {
+
+                capturing = false;
+
+                startCaptureBtn.disabled = false;
+
+            }
+
+        }
+    );
+
+
+    // --------------------------------------------------
+    // STOP CAMERA
+    // --------------------------------------------------
+
+    function stopCamera() {
+
+        if (stream) {
+
+            stream
+                .getTracks()
+                .forEach(
+                    track => track.stop()
+                );
+
+            stream = null;
+
+            video.srcObject = null;
+        }
+    }
+
+
+    // --------------------------------------------------
+    // PAGE CLOSE
+    // --------------------------------------------------
+
+    window.addEventListener(
+        "beforeunload",
+        function () {
+
+            stopCamera();
+
+        }
+    );
+
+</script>
+
+</body>
+</html>

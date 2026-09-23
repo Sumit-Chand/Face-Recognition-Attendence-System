@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Student Management</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(180deg, #f8fafc, #eef2ff);
+            padding: 30px;
+            text-align: center;
+            color: #111827;
+        }
+
+        h1 {
+            margin-bottom: 25px;
+            font-size: 2rem;
+        }
+
+        .back {
+            display: inline-block;
+            margin-bottom: 25px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            box-shadow: 0 8px 18px rgba(37, 99, 235, 0.2);
+        }
+
+        .table-wrap {
+            width: min(1000px, 90vw);
+            margin: 0 auto;
+            background: rgba(255,255,255,0.8);
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+            padding: 18px;
+        }
+
+        table {
+            width: 100%;
+            margin: auto;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        th {
+            background: #111827;
+            color: white;
+            padding: 14px;
+            text-align: left;
+        }
+
+        td {
+            padding: 12px 14px;
+            border: 1px solid #e5e7eb;
+            text-align: left;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .delete-btn:hover {
+            background: #b02a37;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <h1>Student Management</h1>
+
+    <a href="/" class="back">
+        ← Back to Home
+    </a>
+
+    <div class="table-wrap">
+        <table>
+
+            <tr>
+                <th>Student ID</th>
+                <th>Name</th>
+                <th>Action</th>
+            </tr>
+
+            {% for student_id, student_name in students.items() %}
+
+            <tr>
+                <td>{{ student_id }}</td>
+                <td>{{ student_name }}</td>
+                <td>
+                    <form method="POST"
+                          action="/delete-student"
+                          onsubmit="return confirm('Are you sure you want to delete student ID {{ student_id }}? This action cannot be undone.');">
+
+                        <input type="hidden" name="student_id" value="{{ student_id }}">
+                        <button type="submit" class="delete-btn">Delete</button>
+                    </form>
+                </td>
+            </tr>
+
+            {% else %}
+
+            <tr>
+                <td colspan="3">No students registered.</td>
+            </tr>
+
+            {% endfor %}
+
+        </table>
+    </div>
+
+</body>
+
+</html>
