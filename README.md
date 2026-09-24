@@ -61,6 +61,8 @@ Then, for each student:
 Each script (`register_student.py`, `train_model.py`, `mark_attendance.py`)
 also runs standalone if you don't want the menu.
 
+Website Link -https://face-attendence-dl2j.onrender.com/
+
 ## Tuning
 
 - `SAMPLES_PER_STUDENT` in `utils.py` — more samples (different angles,
