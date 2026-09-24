@@ -86,3 +86,4 @@ also runs standalone if you don't want the menu.
 - Push attendance rows to a database (SQLite/MySQL) instead of CSV.
 - Add liveness detection (blink/motion check) to prevent spoofing with a photo.
 - Email/SMS a daily attendance summary automatically.
+- Very Helpful for attendence problem .
